@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<info>
+    <directory>./TheoryHTML/Pages</directory>
+    <directory>./TheoryHTML/Images</directory>
+    <order>
+        <page>main.html</page>
+        <page>introduction.html</page>
+        <page>binaryRelationship.html</page>
+        <page>dirichletPrinciple.html</page>
+        <page>hashFunction.html</page>
+        <page>hashTable.html</page>
+        <page>chainMethod.html</page>
+        <page>openAddressing.html</page>
+        <page>analysis.html</page>
+    </order>
+</info>

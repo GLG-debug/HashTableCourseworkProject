@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ManualHTML/info.xml</file>
+        <file>ManualHTML/Pages/demonstration.html</file>
+        <file>ManualHTML/Pages/main.html</file>
+        <file>ManualHTML/Pages/menubar.html</file>
+        <file>ManualHTML/Pages/theory.html</file>
+        <file>ManualHTML/Pages/theoryPage.html</file>
+        <file>ManualHTML/Pages/testingPage.html</file>
+        <file>ManualHTML/Images/demonstration.png</file>
+        <file>ManualHTML/Images/menubarFirst.png</file>
+        <file>ManualHTML/Images/menubarSecond.png</file>
+        <file>ManualHTML/Images/testingPage.png</file>
+        <file>ManualHTML/Images/theory.png</file>
+        <file>ManualHTML/Images/theoryPage.png</file>
+    </qresource>
+</RCC>

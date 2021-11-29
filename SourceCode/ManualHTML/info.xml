@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<info>
+    <directory>:/ManualHTML/Pages</directory>
+    <directory>:/ManualHTML/Images</directory>
+    <order>
+        <page>main.html</page>
+            <page>theoryPage.html</page>
+            <page>theory.html</page>
+        <page>demonstration.html</page>
+        <page>testingPage.html</page>
+        <page>menubar.html</page>
+    </order>
+</info>

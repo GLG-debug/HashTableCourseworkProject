@@ -1,0 +1,167 @@
+﻿<?xml version="1.0"?>
+<questions>
+    
+<!-- Не подходит под техническое задание 
+
+    <question category = "hashTable" complexity = "easy" type = "write">
+        <caption>Продолжите фразу.</caption>
+        <text>Принципом получения элемента в хеш-таблице является нахождение элемента, где поиск</text>
+        <answer>Отсутствует</answer>
+    </question>
+
+    <question category = "analysis" complexity = "easy" type = "write">
+        <caption>Продолжите фразу.</caption>
+        <text>Нулевая дисперсия является гарантией хеширования</text>
+        <answer>Идеального</answer>
+    </question>
+
+    <question category = "discreteMathematics" complexity = "easy" type = "write">
+        <caption>Продолжите фразу.</caption>
+        <text>Принцип Дирихле определяет неизбежность появления</text>
+        <answer>Коллизий</answer>
+    </question>
+
+    <question category = "discreteMathematics" complexity = "easy" type = "write">
+        <caption>Дайте определение.</caption>
+        <text>Элемент области значений, соотнесённый с заранее известным элементом из области определения.</text>
+        <answer>Хеш</answer>
+    </question>
+
+    <question category = "hashFunction" complexity = "easy" type = "write">
+        <caption>Дайте определение.</caption>
+        <text>Процесс получения хеша.</text>
+        <answer>Хеширование</answer>
+    </question>
+
+    <question category = "hashFunction" complexity = "easy" type = "write">
+        <caption>Дайте определение.</caption>
+        <text>Ситуация, при которой нарушается условие инъективности хеш-функции.</text>
+        <answer>Коллизия</answer>
+    </question>
+
+    <question category = "hashTable" complexity = "easy" type = "write">
+        <caption>Дайте определение.</caption>
+        <text>Использущейся хеш-таблицей произвольный элемент из области определения хеш-функции.</text>
+        <answer>Ключ</answer>
+        <answer>Сообщение</answer>
+    </question>
+
+    <question category = "hashTable" complexity = "easy" type = "write">
+        <caption>Дайте определение.</caption>
+        <text>Произвольный элемент, который хранит данные хеш-таблицы.</text>
+        <answer>Бункер</answer>
+        <answer>Корзина</answer>
+    </question>
+
+    <question category = "hashTable" complexity = "easy" type = "write">
+        <caption>Продолжите фразу.</caption>
+        <text>Отношение количества используемых бункеров на количество возможных ключей определяет коэффициент</text>
+        <answer>Заполнения</answer>
+    </question>
+
+    <question category = "hashTable" complexity = "" type = "choice">
+        <caption>Напишите определение, которое соответствует описанию (2 слова).</caption>
+        <text>Хеширование при котором хеш-функция приближена к биективной k-совершенной хеш-функции, где разность количества отношейний любых двух элементов области значений стремится к нулю.</text>
+        <answer type = "first">Простое</answer>
+        <answer type = "second">Равномерное</answer>
+    </question>
+
+    <question category = "hashTable" complexity = "easy" type = "choice">
+        <caption>Выберите правильный ответ.</caption>
+        <text>Какой метод разрешения коллизий обязательно должен использовать идеальное хеширование?</text>
+        <answer type = "correct">Прямая адрессация.</answer>
+        <answer type = "wrong">Открытая адрессация.</answer>
+        <answer type = "wrong">Регистровая адресация.</answer>
+        <answer type = "wrong">Метод цепочек.</answer>
+        <answer type = "wrong">Ничего из вышеперечисленного.</answer>
+    </question>
+
+    <question category = "hashTable|algorithm" complexity = "easy" type = "choice">
+        <caption>Выберите правильный ответ.</caption>
+        <text>При какой реализации хеш-таблиц необходимо использовать дополнительные контейнеры для хранения бункеров?</text>
+        <answer type = "wrong">Прямая адрессация.</answer>
+        <answer type = "wrong">Открытая адрессация.</answer>
+        <answer type = "wrong">Регистровая адресация.</answer>
+        <answer type = "correct">Метод цепочек.</answer>
+        <answer type = "wrong">Ничего из вышеперечисленного.</answer>
+    </question>
+
+    <question category = "hashTable|algorithm" complexity = "easy" type = "choice">
+        <caption>Определите про какой алгоритм поиска бункера при решении коллизий открытой адресацией идёт речь?</caption>
+        <text>Политика разрешения коллизий использует в качестве шага по индексу квадрат количества ячеек.</text>
+        <answer type = "wrong">Линейное пробирование.</answer>
+        <answer type = "correct">Квадратичное пробирование.</answer>
+        <answer type = "wrong">Псевдослучайное пробирование.</answer>
+        <answer type = "wrong">Двойное хеширование.</answer>
+        <answer type = "wrong">Ничего из вышеперечисленного.</answer>
+    </question>
+
+    <question category = "hashTable|algorithm" complexity = "easy" type = "choice">
+        <caption>Определите про какой алгоритм поиска бункера при решении коллизий открытой адресацией идёт речь?</caption>
+        <text>Политика разрешения коллизий использует в качестве шага по индексу постоянное число.</text>
+        <answer type = "correct">Линейное пробирование.</answer>
+        <answer type = "wrong">Квадратичное пробирование.</answer>
+        <answer type = "wrong">Псевдослучайное пробирование.</answer>
+        <answer type = "wrong">Двойное хеширование.</answer>
+        <answer type = "wrong">Ничего из вышеперечисленного.</answer>
+    </question>
+
+    <question category = "hashTable|algorithm" complexity = "easy" type = "choice">
+        <caption>Определите про какой алгоритм поиска бункера при решении коллизий открытой адресацией идёт речь?</caption>
+        <text>Политика разрешения коллизий использует в качестве шага по индексу псевдослучайную функцию.</text>
+        <answer type = "wrong">Линейное пробирование.</answer>
+        <answer type = "wrong">Квадратичное пробирование.</answer>
+        <answer type = "correct">Псевдослучайное пробирование.</answer>
+        <answer type = "wrong">Двойное хеширование.</answer>
+        <answer type = "wrong">Ничего из вышеперечисленного.</answer>
+    </question>
+
+    <question category = "hashTable|algorithm" complexity = "easy" type = "choice">
+        <caption>Определите про какой алгоритм поиска бункера при решении коллизий открытой адресацией идёт речь?</caption>
+        <text>Политика разрешения коллизий использует в качестве шага по индексу вторую функцию хеширования.</text>
+        <answer type = "wrong">Линейное пробирование.</answer>
+        <answer type = "wrong">Квадратичное пробирование.</answer>
+        <answer type = "wrong">Псевдослучайное пробирование.</answer>
+        <answer type = "correct">Двойное хеширование.</answer>
+        <answer type = "wrong">Ничего из вышеперечисленного.</answer>
+    </question>
+
+-->
+
+    <question category = "hashFunction" complexity = "easy" type = "choice">
+        <caption>Выберите правильный ответ.</caption>
+        <text>С какими данными оперирует хеш-функция в процессе хеширования?</text>
+        <answer>Хеш-память.</answer>
+        <answer type = "correct">Хеш-значение.</answer>
+        <answer>Кеш-память.</answer>
+        <answer type = "correct">Множество ключей.</answer>
+        <answer type = "correct">Множество значений.</answer>
+    </question>
+
+    <question category = "hashFunction" complexity = "easy" type = "choice">
+        <caption>Выберите правильный ответ.</caption>
+        <text>На что влияет коэффициент заполнения?</text>
+        <answer type = "correct">Поиск неиспользующегося бункера, при гарантии его существования.</answer>
+        <answer>Поиск использующегося бункера по его ключу.</answer>
+        <answer>Скорость хеширования.</answer>
+        <answer type = "correct">Количество используемых бункеров.</answer>
+        <answer>Количество возможных ключей.</answer>
+    </question>
+
+    <question category = "hashTable|algorithm" complexity = "easy" type = "choice">
+        <caption>Выберите правильный ответ.</caption>
+        <text>Какие алгоритмы поиска бункера при решении коллизий открытой адресацией используют ровно одну хеш-функцию?</text>
+        <answer type = "correct">Линейное пробирование.</answer>
+        <answer type = "correct">Квадратичное пробирование.</answer>
+        <answer type = "correct">Псевдослучайное пробирование.</answer>
+        <answer>Двойное хеширование.</answer>
+        <answer>Ничего из перечисленного.</answer>
+    </question>
+
+    <question category = "hashTable|algorithm" complexity = "easy" type = "integer">
+        <caption>Введите правильное целочисленое число.</caption>
+        <text>Чему равна дисперсия, как мера разброса элементов хеш-таблицы от средней условной величины при идеальном хешировании?</text>
+        <answer type = "correct">0</answer>
+    </question>
+
+</questions>
