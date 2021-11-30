@@ -3,7 +3,7 @@
 BEGIN_NAMESPACE(BusinessLogic)
 BEGIN_NAMESPACE(Convert)
 
-size_t toInteger(const std::array<char, 5> &value, size_t alphabetPower) {
+size_t FromStdString::operator()(const std::array<char, 5> &value, size_t alphabetPower) const {
     if (value.empty()) {
         throw std::invalid_argument("undefined key");
     }

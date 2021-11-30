@@ -31,17 +31,6 @@ public:
     }
 };
 
-class Creator : public Abstract::Creator
-{
-protected:
-    Creator()
-    {
-    }
-
-public:
-    virtual const Product &create() const = 0;
-};
-
 END_NAMESPACE //  Family
 END_NAMESPACE //  Function
 END_NAMESPACE //  Hash

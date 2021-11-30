@@ -2,8 +2,8 @@
 #define ABSTRACT_HASH_TABLE_H
 
 #include "../../businessLogic.h"
-#include "Pattern/subscriber.h"
 #include "../../Statistics/dispersion.h"
+#include "Pattern/subscriber.h"
 
 #include <vector>
 #include <list>
@@ -21,11 +21,12 @@ class Abstract : public Pattern::Publisher
 {
 public:
     using value_type = std::array<char, 5>;
+    using collision_container = BusinessLogic::Statistics::Dispersion::container_type;
 
 protected:  // Members
     size_t      m_numberOfBuckets;
-    long double m_simpleUniformHashingCoefficient;
     size_t      m_alphabetPower;
+    BusinessLogic::Statistics::Dispersion m_dispersion;
 
 protected:
     Abstract(size_t alphabetPower)
@@ -43,14 +44,12 @@ public:
     virtual bool isExist(const value_type &) const = 0;
     virtual size_t size() const = 0;
     virtual bool insert(const value_type &value) = 0;
+    virtual double simpleUniformHashingCoefficient() const = 0;
     size_t alphabetPower() const {
         return m_alphabetPower;
     }
     size_t numberOfBuckets() const {
         return m_numberOfBuckets;
-    }
-    long double simpleUniformHashingCoefficient() const {
-        return m_simpleUniformHashingCoefficient;
     }
 };
 

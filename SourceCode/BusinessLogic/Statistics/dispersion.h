@@ -12,30 +12,11 @@ BEGIN_NAMESPACE(Statistics)
 
 class Dispersion {
 public: // Types
-    using value_type     = double;
-    using container_type = std::vector<double>;
+    using value_type     = size_t;
+    using container_type = std::vector<value_type>;
 
 public:
-    double operator()(const container_type &container) {
-        double average = 0;
-        double averageOfSquares = 0;
-        size_t size = container.size();
-
-        if( std::all_of(
-                container.begin() + 1,
-                container.end(),
-                std::bind(std::equal_to<value_type>(), std::placeholders::_1, container.front())
-            )
-        ) {
-            return 0;
-        }
-
-        for(const auto &value : container) {
-            average          += value         / size;
-            averageOfSquares += value * value / size;
-        }
-        return averageOfSquares - average * average;
-    }
+    long double operator()(const container_type &container, size_t size) const;
 };
 
 END_NAMESPACE // Statistics

@@ -69,7 +69,7 @@ namespace BusinessLogic
         {
             class Abstract;
 
-            class DirectAddress; // Direct address hash function
+            class OpenAddressing; // Direct address hash function
 
             class Chains;        // Hash function implemented by the chain method
 
@@ -90,7 +90,7 @@ namespace BusinessLogic
 
     namespace Convert
     {
-        /* Other functions */
+        class FromStdString;
     }
 
     namespace Statistics

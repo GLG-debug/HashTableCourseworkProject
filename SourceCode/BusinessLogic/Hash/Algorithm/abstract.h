@@ -21,6 +21,7 @@ public:
 
 private:
     const std::vector<value_type> *m_table;
+    BusinessLogic::Convert::FromStdString m_toInteger;
 
 protected:
     Product() : m_table(nullptr)
@@ -67,7 +68,7 @@ public:
         }
 
         size_t size = m_table->size();
-        size_t convertValue     = Convert::toInteger(value, alphabetPower);
+        size_t convertValue     = m_toInteger(value, alphabetPower);
         // It is necessary to use some coefficient
         size_t beginIndex       = getFirstCoefficient(convertValue) % size;
         size_t multiplier       = getMultiplier(convertValue);
@@ -90,17 +91,6 @@ public:
         }
         return std::numeric_limits<size_t>::max();
     }
-};
-
-class Creator
-{
-protected:
-    Creator()
-    {
-    }
-
-public:
-    virtual std::unique_ptr<Product> create() const = 0;
 };
 
 END_NAMESPACE // Abstract

@@ -147,7 +147,7 @@ DemonstrationWidget::DemonstrationWidget(QWidget *pWidget)
  *  Inserting elements
 */
 
-void DemonstrationWidget::successfulInsertion(const value_type &value, std::pair<size_t, size_t> index, size_t numberOfCollisions, double simpleUniformHashingCoefficients) {
+void DemonstrationWidget::successfulInsertion(const table_type *, const value_type &value, std::pair<size_t, size_t> index, size_t numberOfCollisions) {
     m_tableInformation.m_lastCoord = index;
     m_tableInformation.m_lastValue = value;
     m_tableInformation.m_lastInsertion = true;
@@ -160,20 +160,21 @@ void DemonstrationWidget::successfulInsertion(const value_type &value, std::pair
         : m_tableInformation.m_maxCollision
     };
 
-    m_tableInformation.m_lastCoefficient = simpleUniformHashingCoefficients;
-    if(simpleUniformHashingCoefficients > m_tableInformation.m_maxCoefficient) {
-        m_tableInformation.m_maxCoefficient = simpleUniformHashingCoefficients;
-    }
+//    m_tableInformation.m_lastCoefficient = simpleUniformHashingCoefficients;
+//    if(simpleUniformHashingCoefficients > m_tableInformation.m_maxCoefficient) {
+//        m_tableInformation.m_maxCoefficient = simpleUniformHashingCoefficients;
+//    }
 
-    m_tableInformation.m_lastCollision = numberOfCollisions;
-    if(numberOfCollisions > m_tableInformation.m_maxCollision) {
-        m_tableInformation.m_maxCollision = simpleUniformHashingCoefficients;
-    }
+//    m_tableInformation.m_lastCollision = numberOfCollisions;
+//    if(numberOfCollisions > m_tableInformation.m_maxCollision) {
+//        m_tableInformation.m_maxCollision = simpleUniformHashingCoefficients;
+//    }
 
-    m_tableInformation.m_pSeriesCoefficient->append(
-        m_tableInformation.m_numberOfSuccesses
-      , simpleUniformHashingCoefficients
-    );
+//    m_tableInformation.m_pSeriesCoefficient->append(
+//        m_tableInformation.m_numberOfSuccesses
+//      , simpleUniformHashingCoefficients
+//    );
+
     m_tableInformation.m_pSeriesNumberOfCollisions->append(
         m_tableInformation.m_numberOfSuccesses
       , numberOfCollisions
@@ -189,7 +190,7 @@ void DemonstrationWidget::successfulInsertion(const value_type &value, std::pair
     }
 }
 
-void DemonstrationWidget::unsuccessfulInsertion(const value_type &value) {
+void DemonstrationWidget::unsuccessfulInsertion(const table_type *, const value_type &value) {
     m_tableInformation.m_lastValue = value;
     m_tableInformation.m_lastInsertion = false;
     ++m_tableInformation.m_numberOfFailures;
@@ -482,7 +483,7 @@ inline void DemonstrationWidget::slotClickedApply() {
     }
     else {
         auto factory = getCurrentFactory();
-        m_pTable = std::make_unique<Table::DirectAddress>(bucketQuantity, *factory, m_alphabetPower);
+        m_pTable = std::make_unique<Table::OpenAddressing>(bucketQuantity, *factory, m_alphabetPower);
     }
     m_pTable->signTheObject(this);
 

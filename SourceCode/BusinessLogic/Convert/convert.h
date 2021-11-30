@@ -11,7 +11,11 @@
 BEGIN_NAMESPACE(BusinessLogic)
 BEGIN_NAMESPACE(Convert)
 
-size_t toInteger(const std::array<char, 5> &, size_t);
+class FromStdString
+{
+public:
+    size_t operator()(const std::array<char, 5> &, size_t) const;
+};
 
 END_NAMESPACE // Convert
 END_NAMESPACE // BusinessLogic

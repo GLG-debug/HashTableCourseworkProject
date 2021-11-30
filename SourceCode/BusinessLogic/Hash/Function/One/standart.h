@@ -29,14 +29,6 @@ public:
     using Singleton::getInstance;
 };
 
-class Creator : public One::Creator
-{
-public:
-    virtual const Product &create() const override {
-        return Product::getInstance();
-    }
-};
-
 END_NAMESPACE //  Standart
 END_NAMESPACE //  Function
 END_NAMESPACE //  Hash

@@ -2,8 +2,8 @@
 #define CHAINS_HASH_TABLE_H
 
 #include "abstract.h"
-#include "../Function/One/one.h"
 #include "../../Convert/convert.h"
+#include "../Function/One/one.h"
 
 BEGIN_NAMESPACE(BusinessLogic)
 BEGIN_NAMESPACE(Hash)
@@ -15,6 +15,9 @@ public: // Types
     using container_type = std::vector<std::list<value_type>>;
     using OFP_type       = Function::One::Product;
     using OFC_type       = Function::One::Creator;
+
+private:
+    BusinessLogic::Convert::FromStdString m_toInteger;
 
 public:
     container_type m_container;
@@ -32,18 +35,6 @@ public:
     }
 
 private:
-    auto sampleData() {
-        using namespace BusinessLogic::Statistics;
-
-        size_t size = this->size();
-        Dispersion::container_type inputData;
-        for(size_t i = 0; i < size; ++i) {
-            inputData.push_back( static_cast<double>(m_container[i].size()) );
-        }
-        return inputData;
-    }
-
-private:
     bool isExist(const value_type &value, size_t index) const {
         const std::list<value_type> &currentList = m_container[index];
         return std::find(currentList.cbegin(), currentList.cend(), value) not_eq currentList.cend();
@@ -52,7 +43,7 @@ private:
 public:
     virtual bool isExist(const value_type &value) const override {
         size_t size = this->size();
-        size_t index = m_function.getHash(Convert::toInteger(value, m_alphabetPower)) % size;
+        size_t index = m_function.getHash(m_toInteger(value, m_alphabetPower)) % size;
         return isExist(value, index);
     }
     auto row(size_t index) const {
@@ -64,10 +55,9 @@ public:
     virtual bool insert(const value_type &value) override {
         using namespace BusinessLogic::Statistics;
 
-        size_t size = this->size();
-        size_t index = m_function.getHash(Convert::toInteger(value, m_alphabetPower)) % size;
+        size_t index = m_function.getHash(m_toInteger(value, m_alphabetPower)) % this->size();
         if( isExist(value, index) ) {
-            sendUnseccessInsertion(value);
+            sendUnseccessInsertion(this, value);
             return false;
         }
 
@@ -76,17 +66,23 @@ public:
             m_container[index].push_back(value);
         }
         catch (const std::bad_alloc &) {
-            sendUnseccessInsertion(value);
+            sendUnseccessInsertion(this, value);
             return false;
         }
         ++m_numberOfBuckets;
 
-        Dispersion coefficient;
-        m_simpleUniformHashingCoefficient = coefficient(sampleData());
-
         size_t listLength = m_container[index].size();
-        sendSuccessfulInsertion(value, std::make_pair(index, listLength - 1), listLength - 1, m_simpleUniformHashingCoefficient);
+        sendSuccessfulInsertion(this, value, std::make_pair(index, listLength - 1), listLength - 1);
+
         return true;
+    }
+    virtual double simpleUniformHashingCoefficient() const override {
+        size_t size = this->size();
+        collision_container container(size);
+        for(size_t i = 0; i < size; ++i) {
+            container[i] = m_container[i].size();
+        }
+        return m_dispersion(container, size);
     }
 };
 

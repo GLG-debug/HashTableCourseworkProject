@@ -32,24 +32,6 @@ protected:
     }
 };
 
-class Creator : public One::Creator
-{
-private:
-    /* A number that is not mutually prime to the size will not apply */
-    const size_t m_coefficient;
-
-public:
-    Creator(size_t coefficient = 1) : m_coefficient(coefficient)
-    {
-    }
-
-public:
-    virtual std::unique_ptr<Abstract::Product> create() const override {
-        return std::unique_ptr<Abstract::Product>(new Product(m_coefficient));
-    }
-    
-};
-
 END_NAMESPACE // LinearProbing
 END_NAMESPACE // Algorithm
 END_NAMESPACE // Hash

@@ -28,14 +28,6 @@ public:
     }
 };
 
-class Creator : public Abstract::Creator
-{
-protected:
-    Creator()
-    {
-    }
-};
-
 END_NAMESPACE // One
 END_NAMESPACE // Algorithm
 END_NAMESPACE // Hash

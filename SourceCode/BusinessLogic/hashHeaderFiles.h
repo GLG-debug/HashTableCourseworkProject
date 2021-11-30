@@ -13,6 +13,16 @@
 #include "Hash/Function/One/equivalent.h"
 #include "Hash/Function/Pattern/familyToOne.h"
 
+#include "Hash/Algorithm/One/creatorLinearProbing.h"
+#include "Hash/Algorithm/One/creatorQuadraticProbing.h"
+#include "Hash/Algorithm/Family/creatorPseudorandomProbing.h"
+#include "Hash/Algorithm/Family/creatorDoubleHashing.h"
+
+#include "Hash/Function/Family/creatorFnv1a.h"
+#include "Hash/Function/One/creatorStandart.h"
+#include "Hash/Function/One/creatorEquivalent.h"
+#include "Hash/Function/Pattern/creatorFamilyToOne.h"
+
 #include "Hash/Factory/one.h"
 #include "Hash/Factory/family.h"
 

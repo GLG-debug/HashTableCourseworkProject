@@ -22,17 +22,6 @@ protected:
     virtual ~Product() = default;
 };
 
-class Creator
-{
-protected:
-    Creator()
-    {
-    }
-
-public:
-    virtual const Product &create() const = 0;
-};
-
 END_NAMESPACE // Abstract
 END_NAMESPACE // Function
 END_NAMESPACE // Hash

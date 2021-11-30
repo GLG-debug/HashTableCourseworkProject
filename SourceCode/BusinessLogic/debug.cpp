@@ -17,16 +17,19 @@ using factory_ptr = std::shared_ptr<const Factory::Abstract>;
 
 class Subscriber : public InterfaceSubscriber {
 private:
-    size_t  m_maxCollision;
     clock_t m_time;
+    size_t  m_maxCollision;
     size_t  m_numberOfSuccesses;
     size_t  m_numberOfFailures;
-    double  m_lastCoefficients;
+    size_t  m_target;
+    long double  m_lastCoefficients;
+
 public:
-    Subscriber()
+    Subscriber(size_t target)
         : m_maxCollision(0)
         , m_numberOfSuccesses(0)
         , m_numberOfFailures(0)
+        , m_target(target)
         , m_lastCoefficients(0)
     {
     }
@@ -53,17 +56,23 @@ public:
         return m_numberOfFailures;
     }
 
-    virtual void successfulInsertion(const std::array<char, 5> &, std::pair<size_t, size_t>, size_t numberOfCollisions, double simpleUniformHashingCoefficients) override {
+    virtual void successfulInsertion(const Table::Abstract *table, const std::array<char, 5> &, std::pair<size_t, size_t>, size_t numberOfCollisions) override {
         m_maxCollision = {
                 numberOfCollisions > m_maxCollision
                 ? numberOfCollisions
                 : m_maxCollision
         };
         ++m_numberOfSuccesses;
-        m_lastCoefficients = simpleUniformHashingCoefficients;
+
+        if(m_numberOfSuccesses + m_numberOfFailures >= m_target) {
+            m_lastCoefficients = table->simpleUniformHashingCoefficient();
+        }
     }
-    virtual void unsuccessfulInsertion(const std::array<char, 5> &) override {
+    virtual void unsuccessfulInsertion(const Table::Abstract *, const std::array<char, 5> &) override {
         ++m_numberOfFailures;
+    }
+    virtual void filledInPart(const Table::Abstract *) override {
+        m_lastCoefficients = 0;
     }
 };
 
@@ -72,22 +81,19 @@ void runTable(std::unique_ptr<Table::Abstract> table, size_t target) {
     constexpr char  firstChar = ' ';
     constexpr char  endChar = '~';
     size_t progress = 0;
-    std::array<char, 5> currentString = { ' ' };
+    std::array<char, 5> currentString = { ' ', ' ', ' ', ' ', ' ' };
 
     bool continueFlag = true;
     while (continueFlag) {
 	  if (++progress > target || not table->insert(currentString)) {
 	    continueFlag = false;
 	  }
-//      if(table->simpleUniformHashingCoefficient() > 1) {
-//        continueFlag = false;
-//      }
 
-         currentString[0] < endChar                                ? ++currentString[0]
-      : (currentString[0] = firstChar, currentString[1] < endChar) ? ++currentString[1]
-      : (currentString[1] = firstChar, currentString[2] < endChar) ? ++currentString[2]
-      : (currentString[2] = firstChar, currentString[3] < endChar) ? ++currentString[3]
-      : (currentString[3] = firstChar, currentString[4] < endChar) ? ++currentString[4]
+         currentString[4] < endChar                                ? ++currentString[4]
+      : (currentString[4] = firstChar, currentString[3] < endChar) ? ++currentString[3]
+      : (currentString[3] = firstChar, currentString[2] < endChar) ? ++currentString[2]
+      : (currentString[2] = firstChar, currentString[1] < endChar) ? ++currentString[1]
+      : (currentString[1] = firstChar, currentString[0] < endChar) ? ++currentString[0]
       : (continueFlag = false);
     }
 }
@@ -120,47 +126,72 @@ int main(int /*argc*/, char **/*argv*/)
     const Factory::Abstract &fac9  { Factory::One(complicatedFNV1a, linearProbing)    };
     const Factory::Abstract &fac10 { Factory::One(complicatedFNV1a, quadraticProbing) };
 
+/*
+ *  Constants
+*/
+
+    constexpr size_t numberOfInserts = (
+            //11
+            //101
+            //5'003
+            //50'021
+            //230'003
+            //456'959
+            //1'000'003
+            //5'000'011
+            //10'000'019
+            10'000'019
+    ); // Must be simple - max is 10'371'957'246
+
     constexpr size_t quantityOfTables = 14;
-    std::array<Subscriber, quantityOfTables>  results{ Subscriber() };
+    constexpr size_t numberOfBins = numberOfInserts / 10;
+    constexpr size_t alphabetPower = '~' - ' ' + 1;
+    constexpr double alpha = 0.9;
 
-    constexpr size_t sizeOpen = /*11*//*101*/5'003/*50'021*//*230'003*//*456'959*/; // Must be simple
-    constexpr size_t targetC = sizeOpen / 10;
-    constexpr size_t alphabetPower = 26;
-    std::array<std::unique_ptr<Table::Abstract>, quantityOfTables> tables {
-        std::unique_ptr<Table::Abstract>( new Table::DirectAddress(sizeOpen, fac1,              alphabetPower) ),
-        std::unique_ptr<Table::Abstract>( new Table::DirectAddress(sizeOpen, fac2,              alphabetPower) ),
-        std::unique_ptr<Table::Abstract>( new Table::DirectAddress(sizeOpen, fac3,              alphabetPower) ),
-        std::unique_ptr<Table::Abstract>( new Table::DirectAddress(sizeOpen, fac4,              alphabetPower) ),
-        std::unique_ptr<Table::Abstract>( new Table::DirectAddress(sizeOpen, fac5,              alphabetPower) ),
-        std::unique_ptr<Table::Abstract>( new Table::DirectAddress(sizeOpen, fac6,              alphabetPower) ),
-        std::unique_ptr<Table::Abstract>( new Table::DirectAddress(sizeOpen, fac7,              alphabetPower) ),
-        std::unique_ptr<Table::Abstract>( new Table::DirectAddress(sizeOpen, fac8,              alphabetPower) ),
-        std::unique_ptr<Table::Abstract>( new Table::DirectAddress(sizeOpen, fac9,              alphabetPower) ),
-        std::unique_ptr<Table::Abstract>( new Table::DirectAddress(sizeOpen, fac10,             alphabetPower) ),
-        std::unique_ptr<Table::Abstract>( new Table::Chains       (targetC,  *equivalent,       alphabetPower) ),
-        std::unique_ptr<Table::Abstract>( new Table::Chains       (targetC,  *standart,         alphabetPower) ),
-        std::unique_ptr<Table::Abstract>( new Table::Chains       (targetC,  *simpleFNV1a,      alphabetPower) ),
-        std::unique_ptr<Table::Abstract>( new Table::Chains       (targetC,  *complicatedFNV1a, alphabetPower) )
-    };
-
-    std::cout << "START!" << std::endl;
-
-    double alpha = 0.8;
-    for(size_t i = 0; i < quantityOfTables; ++i) {
-        tables[i]->signTheObject(&results[i]);
-        results[i].startTime();
-        runTable(std::move(tables[i]), sizeOpen * alpha);
-        results[i].endTime();
-
-        std::cout
-          << results[i].maxCollision() << '\t'
-          << std::sqrt(results[i].lastCoefficient()) << '\t'
-          << results[i].numberOfSuccesses() << '/'
-          << alpha << '/'
-          << sizeOpen << '\t'
-          << results[i].workingTime() << std::endl;
+    std::array<std::shared_ptr<Subscriber>, quantityOfTables> results;
+    for(std::shared_ptr<Subscriber> &current : results) {
+        current = std::make_shared<Subscriber>(static_cast<size_t>(numberOfInserts * alpha));
     }
 
-    std::cin.get();
-    std::cin.get();
+/*
+ *  Constants
+*/
+
+
+
+    std::array<std::unique_ptr<Table::Abstract>, quantityOfTables> tables {
+        std::unique_ptr<Table::Abstract>( new Table::OpenAddressing(numberOfInserts, fac1,              alphabetPower) ),
+        std::unique_ptr<Table::Abstract>( new Table::OpenAddressing(numberOfInserts, fac2,              alphabetPower) ),
+        std::unique_ptr<Table::Abstract>( new Table::OpenAddressing(numberOfInserts, fac3,              alphabetPower) ),
+        std::unique_ptr<Table::Abstract>( new Table::OpenAddressing(numberOfInserts, fac4,              alphabetPower) ),
+        std::unique_ptr<Table::Abstract>( new Table::OpenAddressing(numberOfInserts, fac5,              alphabetPower) ),
+        std::unique_ptr<Table::Abstract>( new Table::OpenAddressing(numberOfInserts, fac6,              alphabetPower) ),
+        std::unique_ptr<Table::Abstract>( new Table::OpenAddressing(numberOfInserts, fac7,              alphabetPower) ),
+        std::unique_ptr<Table::Abstract>( new Table::OpenAddressing(numberOfInserts, fac8,              alphabetPower) ),
+        std::unique_ptr<Table::Abstract>( new Table::OpenAddressing(numberOfInserts, fac9,              alphabetPower) ),
+        std::unique_ptr<Table::Abstract>( new Table::OpenAddressing(numberOfInserts, fac10,             alphabetPower) ),
+        std::unique_ptr<Table::Abstract>( new Table::Chains        (numberOfBins,    *equivalent,       alphabetPower) ),
+        std::unique_ptr<Table::Abstract>( new Table::Chains        (numberOfBins,    *standart,         alphabetPower) ),
+        std::unique_ptr<Table::Abstract>( new Table::Chains        (numberOfBins,    *simpleFNV1a,      alphabetPower) ),
+        std::unique_ptr<Table::Abstract>( new Table::Chains        (numberOfBins,    *complicatedFNV1a, alphabetPower) )
+    };
+
+    std::cout << std::fixed;
+    std::cout.precision(10);
+    std::cout << "START!" << std::endl;
+    for(size_t i = 0; i < quantityOfTables; ++i) {
+        tables[i]->signTheObject( &results[i].operator*() );
+        results[i]->startTime();
+        runTable(std::move(tables[i]), numberOfInserts * alpha);
+        results[i]->endTime();
+
+        std::cout
+          << results[i]->maxCollision() << ' '
+          << std::sqrt(results[i]->lastCoefficient()) << ' '
+          << results[i]->numberOfSuccesses() << '/'
+          << alpha << '/'
+          << numberOfInserts << ' '
+          << results[i]->workingTime() << std::endl;
+    }
+    std::cout << "END!" << std::endl;
 }

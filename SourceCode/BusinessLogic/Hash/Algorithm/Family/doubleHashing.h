@@ -32,23 +32,6 @@ protected:
     }
 };
 
-class Creator : public Family::Creator
-{
-private:
-    size_t m_firstHashFunction;
-    size_t m_secondHashFunction;
-
-public:
-    Creator(size_t first, size_t second) : m_firstHashFunction(first), m_secondHashFunction(second)
-    {
-    }
-
-public:
-    virtual std::unique_ptr<Abstract::Product> create() const override {
-        return std::unique_ptr<Abstract::Product>(new Product(m_firstHashFunction, m_secondHashFunction));
-    }
-};
-
 END_NAMESPACE // DoubleHashing
 END_NAMESPACE // Algorithm
 END_NAMESPACE // Hash

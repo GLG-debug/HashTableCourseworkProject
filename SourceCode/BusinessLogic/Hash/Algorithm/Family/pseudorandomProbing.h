@@ -37,23 +37,6 @@ protected:
     }
 };
 
-class Creator : public Family::Creator
-{
-private:
-    size_t m_hashFunctionNumber;
-
-public:
-    Creator(size_t number) : m_hashFunctionNumber(number)
-    {
-    }
-
-public:
-    virtual std::unique_ptr<Abstract::Product> create() const override {
-        return std::unique_ptr<Abstract::Product>(new Product(m_hashFunctionNumber));
-    }
-
-};
-
 END_NAMESPACE // PseudorandomProbing
 END_NAMESPACE // Algorithm
 END_NAMESPACE // Hash

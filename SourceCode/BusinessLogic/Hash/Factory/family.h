@@ -2,8 +2,12 @@
 #define FACTORY_FAMILY_H
 
 #include "../Factory/abstract.h"
+
 #include "../Function/Family/family.h"
+#include "../Function/Family/creatorFamily.h"
+
 #include "../Algorithm/Family/family.h"
+#include "../Algorithm/Family/creatorFamily.h"
 
 BEGIN_NAMESPACE(BusinessLogic)
 BEGIN_NAMESPACE(Hash)

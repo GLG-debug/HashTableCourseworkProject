@@ -52,13 +52,13 @@ private:
     void setEnabledGUIStartTesting(bool flag);
     TagXML getTagsEnumFromQString(const QString&);
     bool checkAnswer(const QString&);
+    void resetInput();
 
 private slots:
     void slotSwitchedTopics();
     void slotSwitchedComplexity();
     void slotClickedConfirm();
     void slotClickedStart();
-    void resetInput();
     void slotResetTesting();
     void slotClickedStop();
 

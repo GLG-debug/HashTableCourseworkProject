@@ -24,6 +24,7 @@ class DemonstrationWidget : public QWidget
 {
 public:
     using value_type = BusinessLogic::Hash::Table::Abstract::value_type;
+    using table_type = BusinessLogic::Hash::Table::Abstract;
 
 private:
     struct TableInformation {
@@ -140,8 +141,9 @@ public:
     DemonstrationWidget(QWidget *pWidget = nullptr);
 
 public: // Custom slots
-    virtual void successfulInsertion(const value_type &, std::pair<size_t, size_t>, size_t , double) override;
-    virtual void unsuccessfulInsertion(const value_type &) override;
+    virtual void successfulInsertion(const table_type *, const value_type &, std::pair<size_t, size_t>, size_t) override;
+    virtual void unsuccessfulInsertion(const table_type *, const value_type &) override;
+    virtual void filledInPart(const table_type *) override {};
 
 private:
     /*

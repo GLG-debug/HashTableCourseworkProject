@@ -16,8 +16,9 @@ BEGIN_NAMESPACE(Pattern)
 class InterfaceSubscriber
 {
 public:
-    virtual void successfulInsertion(const std::array<char, 5> &, std::pair<size_t, size_t>, size_t, double) = 0;
-    virtual void unsuccessfulInsertion(const std::array<char, 5> &) = 0;
+    virtual void successfulInsertion(const Table::Abstract *, const std::array<char, 5> &, std::pair<size_t, size_t>, size_t) = 0;
+    virtual void unsuccessfulInsertion(const Table::Abstract *, const std::array<char, 5> &) = 0;
+    virtual void filledInPart(const Table::Abstract *) = 0;
 };
 
 class Publisher
@@ -38,14 +39,19 @@ public:
     }
 
 protected:
-    virtual void sendSuccessfulInsertion(const std::array<char, 5> &value, std::pair<size_t, size_t> index, size_t numberOfCollisions, double simpleUniformHashingCoefficient) const {
+    virtual void sendSuccessfulInsertion(const Table::Abstract *sender, const std::array<char, 5> &value, std::pair<size_t, size_t> index, size_t numberOfCollisions) const {
         for (decltype(auto) currentSubscriber : m_subscribers) {
-            currentSubscriber->successfulInsertion(value, index, numberOfCollisions, simpleUniformHashingCoefficient);
+            currentSubscriber->successfulInsertion(sender, value, index, numberOfCollisions);
         }
     }
-    virtual void sendUnseccessInsertion(const std::array<char, 5> &value) const {
+    virtual void sendUnseccessInsertion(const Table::Abstract *sender, const std::array<char, 5> &value) const {
         for (decltype(auto) currentSubscriber : m_subscribers) {
-            currentSubscriber->unsuccessfulInsertion(value);
+            currentSubscriber->unsuccessfulInsertion(sender, value);
+        }
+    }
+    virtual void sendFilledInPart(const Table::Abstract *sender) const {
+        for (decltype(auto) currentSubscriber : m_subscribers) {
+            currentSubscriber->filledInPart(sender);
         }
     }
 };

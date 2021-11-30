@@ -2,8 +2,12 @@
 #define FACTORY_ONE_H
 
 #include "../Factory/abstract.h"
+
 #include "../Function/One/one.h"
+#include "../Function/One/creatorOne.h"
+
 #include "../Algorithm/One/one.h"
+#include "../Algorithm/One/creatorOne.h"
 
 BEGIN_NAMESPACE(BusinessLogic)
 BEGIN_NAMESPACE(Hash)
