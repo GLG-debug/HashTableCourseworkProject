@@ -20,8 +20,8 @@ inline void DemonstrationWidget::TableInformation::clear() {
 DemonstrationWidget::DemonstrationWidget(QWidget *pWidget)
     : QWidget                 ( pWidget )
     , m_pChartCollisionsView  ( new QChartView(new QChart, this) )
-    , m_stop                  ( false   )
     , m_pStandardModel        ( nullptr )
+    , m_stop                  ( false   )
     , m_pFunction             ( nullptr )
     , m_complicatedFunction   ( nullptr )
     , m_pAlgorithm            ( nullptr )
@@ -553,6 +553,7 @@ inline void DemonstrationWidget::setEnabledInsertingProcess(bool flag) {
         , m_pbInsert
         , m_pbReset
         , m_pbStatistics
+        , m_pbFindFree
     }) {
         widget->setEnabled(flag);
     }
