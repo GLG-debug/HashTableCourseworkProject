@@ -110,9 +110,8 @@ private:
     static constexpr char endChar   = '~';
 
      QChartView *m_pChartCollisionsView;
-     std::mutex m_viewUpdate;
-     std::atomic<bool> m_stop;
      QStandardItemModel *m_pStandardModel;
+     bool m_stop;
 
     /*
     *  Business logic
@@ -232,7 +231,7 @@ private slots:
     void slotClickedApply();
     void slotClickedMakeItems();
     void slotClickedInsert();
-    void slotClickedStatistics() const;
+    void slotClickedStatistics();
     void slotClickedFindFree();
     void slotClickedStop();
     void slotClickedFocus();

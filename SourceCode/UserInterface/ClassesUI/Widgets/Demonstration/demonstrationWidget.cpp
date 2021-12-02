@@ -134,8 +134,6 @@ void DemonstrationWidget::successfulInsertion(const table_type *, const value_ty
         m_tableInformation.m_maxCollision = numberOfCollisions;
     }
 
-    std::lock_guard<std::mutex> lk(m_viewUpdate);
-
     m_tableInformation.m_pSeriesNumberOfCollisions->append(
         m_tableInformation.m_numberOfSuccesses
       , numberOfCollisions
@@ -255,48 +253,29 @@ inline void DemonstrationWidget::slotClickedMakeItems() {
      * For other thread
     */
 
-    std::atomic<size_t> progress(0);
-    size_t target = m_sbQuantity->value();
-
-    value_type currentString = toStdArray(m_leFrom->text().toStdString());
-
     setEnabledInsertingProcess(false);
     m_frmProgressBar->setVisible(true);
-
-    std::packaged_task<void()> insertTask([&, this]() {
-        while (++progress <= target) {
-            m_pTable->insert(currentString);
-            next(currentString);
-            if(m_stop) {
-                m_stop = false;
-                break;
-            }
-        }
-
-    });
-    auto future = insertTask.get_future();
 
     auto differenceNumberOfSuccesses = m_tableInformation.m_numberOfSuccesses;
     auto differenceNumberOfFailures  = m_tableInformation.m_numberOfFailures;
 
-    std::thread insertThread(std::move(insertTask));
-
-    /*
-     *  For main thread
-    */
-
     int value;
-    double div = static_cast<double>(m_progressBar->maximum()) / target;
-    while (future.wait_for(std::chrono::milliseconds(0)) not_eq std::future_status::ready) {
-        value = static_cast<int>(progress * div);
+    value_type currentString = toStdArray(m_leFrom->text().toStdString());
+    for(size_t progress = 0, target = m_sbQuantity->value(); progress < target; ++progress) {
+        m_pTable->insert(currentString);
+        next(currentString);
+        if(m_stop) {
+            m_stop = false;
+            break;
+        }
+
+        value = static_cast<int>(progress * static_cast<double>(m_progressBar->maximum()) / target);
         if(value > m_progressBar->value()) {
             m_progressBar->setValue( value );
         }
 
-        std::lock_guard<std::mutex> lk(m_viewUpdate);
         QApplication::processEvents();
     }
-    insertThread.join();
 
     updateCharts();
     updateTableView();
@@ -488,7 +467,8 @@ inline void DemonstrationWidget::slotClickedApply() {
     m_lblOutputMessages->setText(getColorTextHTML("The model was created", "green"));
 }
 
-inline void DemonstrationWidget::slotClickedStatistics() const {
+inline void DemonstrationWidget::slotClickedStatistics() {
+    m_tableInformation.m_lastCoefficient = m_pTable->simpleUniformHashingCoefficient();
     QMessageBox::information(nullptr, "Statistics"
         , QString("Maximum number of collisions:\t%1\n").arg(m_tableInformation.m_maxCollision)
         + QString("Number of successful inserts:\t\t%1\n").arg(m_tableInformation.m_numberOfSuccesses)
