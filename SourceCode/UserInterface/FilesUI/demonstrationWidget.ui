@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1052</width>
-    <height>412</height>
+    <width>1340</width>
+    <height>739</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>351</y>
-     <width>1051</width>
-     <height>60</height>
+     <y>0</y>
+     <width>0</width>
+     <height>0</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -85,7 +85,7 @@
   <widget class="QScrollArea" name="m_rightScrollArea">
    <property name="geometry">
     <rect>
-     <x>801</x>
+     <x>800</x>
      <y>0</y>
      <width>250</width>
      <height>350</height>
@@ -597,9 +597,6 @@
             <property name="inputMethodHints">
              <set>Qt::ImhNone</set>
             </property>
-            <property name="text">
-             <string notr="true"/>
-            </property>
             <property name="maxLength">
              <number>4</number>
             </property>
@@ -860,7 +857,7 @@
    <property name="minimumSize">
     <size>
      <width>800</width>
-     <height>200</height>
+     <height>350</height>
     </size>
    </property>
    <property name="editTriggers">
@@ -926,5 +923,38 @@
   <tabstop>m_pbFocus</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>m_rbChains</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>m_gbAlgorithm</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>861</x>
+     <y>45</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>858</x>
+     <y>225</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>m_rbOpenAdressing</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>m_gbAlgorithm</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>887</x>
+     <y>78</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>892</x>
+     <y>219</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

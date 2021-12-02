@@ -10,11 +10,11 @@ public:
     }
 
     virtual State validate(QString& str, int&) const override {
-        QRegExp rxp = QRegExp("[^ -~]");
+        QRegExp rxp = QRegExp("[!-~]*");
         if (str.contains(rxp)) {
-            return Invalid;
+            return Acceptable;
         }
-        return Acceptable;
+        return Invalid;
     }
 };
 

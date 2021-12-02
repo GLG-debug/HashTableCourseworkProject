@@ -7,29 +7,27 @@ inline void DemonstrationWidget::TableInformation::clear() {
    for (double *value : { &m_lastCoefficient, &m_maxCoefficient } ) {
        *value = 0;
    }
-   for( auto *series : { m_pSeriesCoefficient, m_pSeriesNumberOfCollisions } ) {
+   for( auto *series : { m_pSeriesNumberOfCollisions } ) {
         series->removePoints(0, series->count());
    }
     m_pSeriesNumberOfCollisions->append(0, 0);
 
    m_lastCoord = { 0, 0 };
-   m_lastValue.front() = 0x0000;
+   m_lastValue = {'\0', '\0', '\0', '\0', '\0'};
    m_lastInsertion = false;
 }
 
 DemonstrationWidget::DemonstrationWidget(QWidget *pWidget)
     : QWidget                 ( pWidget )
-    , m_pChartCoefficientView ( new QChartView(new QChart, this) )
     , m_pChartCollisionsView  ( new QChartView(new QChart, this) )
     , m_stop                  ( false   )
     , m_pStandardModel        ( nullptr )
     , m_pFunction             ( nullptr )
     , m_complicatedFunction   ( nullptr )
     , m_pAlgorithm            ( nullptr )
-    , m_alphabetPower         ( '~' - ' ' + 1 )
+    , m_alphabetPower         ( endChar - firstChar + 1 )
     , m_pTable                ( nullptr )
-    , m_tableInformation      ( new QLineSeries( m_pChartCoefficientView->chart() )
-                              , new QLineSeries( m_pChartCollisionsView->chart() ) )
+    , m_tableInformation      ( new QLineSeries( m_pChartCollisionsView->chart() ) )
 {
     setupUi(dynamic_cast<QWidget *>(this));
 
@@ -37,30 +35,11 @@ DemonstrationWidget::DemonstrationWidget(QWidget *pWidget)
     QGridLayout *gridLayout = new QGridLayout;
 
     /*
-     *  First chart
+     *  Сhart
     */
+
     auto *axisX = new QValueAxis();
     auto *axisY = new QValueAxis();
-    axisX->setTickCount(20);
-    axisY->setTickCount(10);
-    axisX->setRange( 1, 2 );
-    axisY->setRange( 0, 1 );
-
-    QChart *chartCoefficient = m_pChartCoefficientView->chart();
-    chartCoefficient->setTitle( "The graph of change in the coefficient of simple uniform hashing" );
-    chartCoefficient->legend()->hide();
-    chartCoefficient->addAxis( axisX, Qt::AlignBottom );
-    chartCoefficient->addAxis( axisY, Qt::AlignLeft );
-    chartCoefficient->addSeries( m_tableInformation.m_pSeriesCoefficient );
-    m_tableInformation.m_pSeriesCoefficient->attachAxis( axisX );
-    m_tableInformation.m_pSeriesCoefficient->attachAxis( axisY );
-
-    /*
-     *  Second chart
-    */
-
-    axisX = new QValueAxis();
-    axisY = new QValueAxis();
     axisX->setTickCount(20);
     axisY->setTickCount(10);
     axisX->setRange( 1, 2 );
@@ -76,22 +55,13 @@ DemonstrationWidget::DemonstrationWidget(QWidget *pWidget)
     m_tableInformation.m_pSeriesNumberOfCollisions->attachAxis( axisY );
 
     /*
-     * Views
+     * View(-s)
     */
 
-    m_pChartCoefficientView->installEventFilter(this);
     m_pChartCollisionsView->installEventFilter(this);
-
-    m_pChartCoefficientView->setRubberBand(QChartView::RectangleRubberBand);
     m_pChartCollisionsView->setRubberBand(QChartView::RectangleRubberBand);
-
-    m_pChartCoefficientView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     m_pChartCollisionsView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-
-    m_pChartCoefficientView->setRenderHint(QPainter::Antialiasing);
     m_pChartCollisionsView->setRenderHint(QPainter::Antialiasing);
-
-    m_pChartCoefficientView->setMinimumHeight(m_tableView->minimumHeight());
     m_pChartCollisionsView->setMinimumHeight(m_tableView->minimumHeight());
 
     /*
@@ -101,7 +71,6 @@ DemonstrationWidget::DemonstrationWidget(QWidget *pWidget)
     QSplitter *splitter = new QSplitter(Qt::Vertical);
     splitter->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     splitter->addWidget(m_tableView);
-    splitter->addWidget(m_pChartCoefficientView);
     splitter->addWidget(m_pChartCollisionsView);
 
     gridLayout->addWidget(splitter, 0, 0, 1, 1);
@@ -117,7 +86,7 @@ DemonstrationWidget::DemonstrationWidget(QWidget *pWidget)
     m_leInsert->setValidator(new LatinValidator(m_leInsert));
 
     /*
-     *  HTML theory
+     *  Signal & slots
     */
 
     connect( m_pbReset,      &QPushButton::clicked, this, &DemonstrationWidget::slotClickedReset      );
@@ -160,27 +129,18 @@ void DemonstrationWidget::successfulInsertion(const table_type *, const value_ty
         : m_tableInformation.m_maxCollision
     };
 
-//    m_tableInformation.m_lastCoefficient = simpleUniformHashingCoefficients;
-//    if(simpleUniformHashingCoefficients > m_tableInformation.m_maxCoefficient) {
-//        m_tableInformation.m_maxCoefficient = simpleUniformHashingCoefficients;
-//    }
+    m_tableInformation.m_lastCollision = numberOfCollisions;
+    if(numberOfCollisions > m_tableInformation.m_maxCollision) {
+        m_tableInformation.m_maxCollision = numberOfCollisions;
+    }
 
-//    m_tableInformation.m_lastCollision = numberOfCollisions;
-//    if(numberOfCollisions > m_tableInformation.m_maxCollision) {
-//        m_tableInformation.m_maxCollision = simpleUniformHashingCoefficients;
-//    }
-
-//    m_tableInformation.m_pSeriesCoefficient->append(
-//        m_tableInformation.m_numberOfSuccesses
-//      , simpleUniformHashingCoefficients
-//    );
+    std::lock_guard<std::mutex> lk(m_viewUpdate);
 
     m_tableInformation.m_pSeriesNumberOfCollisions->append(
         m_tableInformation.m_numberOfSuccesses
       , numberOfCollisions
     );
 
-    std::lock_guard<std::mutex> lk(m_columnUpdate);
     QModelIndex modelIndex = m_pStandardModel->index(index.first, index.second);
     if(getCurrentTableType() == TableType::Chain){
         updateColumns(index.first);
@@ -224,14 +184,9 @@ inline void DemonstrationWidget::updateColumns(size_t rowIndex) {
 }
 
 inline void DemonstrationWidget::updateCharts() {
-    m_pChartCoefficientView->chart()->axes(Qt::Horizontal).front()->setRange(1, m_tableInformation.m_numberOfSuccesses);
     m_pChartCollisionsView->chart()->axes(Qt::Horizontal).front()->setRange(1, m_tableInformation.m_numberOfSuccesses);
-
     m_pChartCollisionsView->chart()->axes(Qt::Vertical).front()->setRange(0, m_tableInformation.m_maxCollision);
-    m_pChartCoefficientView->chart()->axes(Qt::Vertical).front()->setRange(0, m_tableInformation.m_maxCoefficient);
-
     m_pChartCollisionsView->chart()->resetMatrix();
-    m_pChartCoefficientView->chart()->resetMatrix();
 }
 
 inline void DemonstrationWidget::updateTableView() {
@@ -246,24 +201,50 @@ inline void DemonstrationWidget::updateTableView() {
 }
 
 inline DemonstrationWidget::value_type &DemonstrationWidget::next(value_type &value) const {
-       value[0] < endChar                        ? static_cast<void>(++value[0])
-    : (value[0] = firstChar, value[1] < endChar) ? static_cast<void>(++value[1])
-    : (value[1] = firstChar, value[2] < endChar) ? static_cast<void>(++value[2])
-    : (value[2] = firstChar, value[3] < endChar) ? static_cast<void>(++value[3])
-    : (value[3] = firstChar, value[4] < endChar) ? static_cast<void>(++value[4])
-    :  static_cast<void>(value[4] = firstChar);
+    auto rbegin = value.rbegin();
+    auto rend = value.rend();
 
+    for(; rbegin != rend; ++rbegin) {
+        if(*rbegin >= firstChar && *rbegin < endChar) {
+            ++(*rbegin);
+            return value;
+        }
+        else if (*rbegin == '\0'){
+            *rbegin = firstChar;
+            return value;
+        }
+        else {
+            *rbegin = firstChar;
+        }
+    }
+    value = toStdArray(std::string(4, '\0') + firstChar);
     return value;
+}
+
+inline bool DemonstrationWidget::checkBeforeInsertion(bool tableTypeIsChain) {
+    size_t quantityOfInserts = m_sbQuantity->value();
+    if(   tableTypeIsChain
+       && (m_pTable->numberOfBuckets() + quantityOfInserts) / m_pTable->size() > 10)
+    {
+        outputMessage("Prohibit insertion when allocating more than 10 elements per chain", "red");
+        return false;
+    }
+    return true;
 }
 
 inline void DemonstrationWidget::slotClickedMakeItems() {
     using namespace BusinessLogic::Convert;
 
+    bool tableTypeIsChain = getCurrentTableType() == TableType::Chain;
+    if( not checkBeforeInsertion(tableTypeIsChain) ) {
+        return;
+    }
+
     /*
      * Preparing
     */
 
-    if(getCurrentTableType() == TableType::Chain && m_pStandardModel->columnCount() == 0) {
+    if(tableTypeIsChain && m_pStandardModel->columnCount() == 0) {
         m_pStandardModel->insertColumns(0, m_sbQuantity->value() / m_sbBucketQuantity->value());
     }
 
@@ -276,6 +257,7 @@ inline void DemonstrationWidget::slotClickedMakeItems() {
 
     std::atomic<size_t> progress(0);
     size_t target = m_sbQuantity->value();
+
     value_type currentString = toStdArray(m_leFrom->text().toStdString());
 
     setEnabledInsertingProcess(false);
@@ -305,21 +287,17 @@ inline void DemonstrationWidget::slotClickedMakeItems() {
 
     int value;
     double div = static_cast<double>(m_progressBar->maximum()) / target;
-    size_t partOfMaxProgressBar = m_progressBar->maximum() / 10;
     while (future.wait_for(std::chrono::milliseconds(0)) not_eq std::future_status::ready) {
         value = static_cast<int>(progress * div);
         if(value > m_progressBar->value()) {
             m_progressBar->setValue( value );
-            if(value % partOfMaxProgressBar < 100) {
-                updateCharts();
-                updateTableView();
-            }
         }
-        std::lock_guard<std::mutex> lk(m_columnUpdate);
+
+        std::lock_guard<std::mutex> lk(m_viewUpdate);
         QApplication::processEvents();
     }
-
     insertThread.join();
+
     updateCharts();
     updateTableView();
 
@@ -341,6 +319,11 @@ inline void DemonstrationWidget::slotClickedMakeItems() {
 }
 
 inline void DemonstrationWidget::slotClickedInsert() {
+    bool tableTypeIsChain = getCurrentTableType() == TableType::Chain;
+    if( not checkBeforeInsertion(tableTypeIsChain) ) {
+        return;
+    }
+
     m_pTable->insert(toStdArray(m_leInsert->text().toStdString()));
     outputMessage(
          m_tableInformation.m_lastInsertion ? "Inserting is successful"
@@ -430,6 +413,8 @@ inline void DemonstrationWidget::slotUpdateAdditionalInputData() {
     if(getCurrentTableType() == TableType::Chain) {
         m_rbStandart->setEnabled(true);
         m_frmSecondInputData->setVisible(false);
+        m_rbEquivalent->setEnabled(true);
+        m_rbStandart->setEnabled(true);
     }
     else if(getCurrentAlgorythmType() == RelationshipType::Family) {
         m_rbFNV1a32bit->setChecked(true);
@@ -454,16 +439,12 @@ inline void DemonstrationWidget::slotClickedApply() {
         return;
     }
 
-    setEnabledCreateHashTable(false);
-    m_pbFocus->setEnabled(true);
-
     updateFunctionCreator();
     updateAlgorithmCreator();
 
     bool tableTypeIsChain = getCurrentTableType() == TableType::Chain;
     bool functionTypeIsFamily = getCurrentFunctionType() == RelationshipType::Family;
 
-    size_t bucketQuantity = m_sbBucketQuantity->value();
     if(functionTypeIsFamily
        && (tableTypeIsChain || getCurrentAlgorythmType() == RelationshipType::One)
     ) {
@@ -472,19 +453,29 @@ inline void DemonstrationWidget::slotClickedApply() {
         );
     }
 
-    if(tableTypeIsChain) {
-        m_pTable = std::make_unique<Table::Chains>(
-              bucketQuantity
-            , functionTypeIsFamily
-              ? *m_complicatedFunction
-              : *std::dynamic_pointer_cast<Function::One::Creator>(m_pFunction)
-            , m_alphabetPower
-        );
+    size_t bucketQuantity = m_sbBucketQuantity->value();
+    try {
+        if(tableTypeIsChain) {
+            m_pTable = std::make_unique<Table::Chains>(
+                  bucketQuantity
+                , functionTypeIsFamily
+                  ? *m_complicatedFunction
+                  : *std::dynamic_pointer_cast<Function::One::Creator>(m_pFunction)
+                , m_alphabetPower
+            );
+        }
+        else {
+            auto factory = getCurrentFactory();
+            m_pTable = std::make_unique<Table::OpenAddressing>(bucketQuantity, *factory, m_alphabetPower);
+        }
     }
-    else {
-        auto factory = getCurrentFactory();
-        m_pTable = std::make_unique<Table::OpenAddressing>(bucketQuantity, *factory, m_alphabetPower);
+    catch(const std::bad_alloc &err) {
+        outputMessage("Not enough RAM", "red");
+        return;
     }
+
+    setEnabledCreateHashTable(false);
+    m_pbFocus->setEnabled(true);
     m_pTable->signTheObject(this);
 
     /*
@@ -507,9 +498,16 @@ inline void DemonstrationWidget::slotClickedStatistics() const {
 }
 
 inline void DemonstrationWidget::slotClickedFindFree() {
-    value_type currentString = m_tableInformation.m_lastValue;
-    while(m_pTable->isExist(next(currentString))) continue;
-    QString result = toQString(currentString);
+    QString result;
+    if(m_pTable->numberOfBuckets() == 0) {
+        result = firstChar;
+    }
+    else {
+        value_type currentString = m_tableInformation.m_lastValue;
+        while(m_pTable->isExist(next(currentString))) continue;
+        result = toQString(currentString);
+    }
+
     m_leFrom->setText(result);
     m_leInsert->setText(result);
 }

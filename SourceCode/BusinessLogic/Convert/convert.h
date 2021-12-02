@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <limits>
 #include <array>
+#include <cmath>
 
 BEGIN_NAMESPACE(BusinessLogic)
 BEGIN_NAMESPACE(Convert)

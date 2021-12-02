@@ -7,9 +7,13 @@ size_t FromStdString::operator()(const std::array<char, 5> &value, size_t alphab
     if (value.empty()) {
         throw std::invalid_argument("undefined key");
     }
-    size_t result = value[0];
-    for (auto current = value.begin() + 1, end = value.end(); current != end; ++current) {
-        result = result * alphabetPower + (*current);
+
+    size_t result = 0;
+    size_t counter = 0;
+    for (auto crbegin = value.crbegin(), crend = value.crend()
+         ; crbegin != crend && *crbegin >= '!' && *crbegin <= '~'; ++crbegin, ++counter
+    ) {
+        result += (*crbegin) * std::pow(alphabetPower, counter);
     }
     return result;
 }

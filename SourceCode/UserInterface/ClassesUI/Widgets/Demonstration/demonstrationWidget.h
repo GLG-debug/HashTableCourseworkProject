@@ -17,7 +17,6 @@
 #include <QChartView>
 #include <QLineSeries>
 
-
 class DemonstrationWidget : public QWidget
                           , protected Ui::DemonstrationWidget
                           , public BusinessLogic::Hash::Table::Pattern::InterfaceSubscriber
@@ -30,7 +29,6 @@ private:
     struct TableInformation {
     public:
         /* Qt containers */
-        QLineSeries *m_pSeriesCoefficient;
         QLineSeries *m_pSeriesNumberOfCollisions;
 
         /* If successful */
@@ -52,10 +50,8 @@ private:
         TableInformation(const TableInformation &) = delete;
         TableInformation(TableInformation &&) = delete;
 
-        TableInformation(  QLineSeries *seriesCoefficient
-                         , QLineSeries *maxCollision )
-            : m_pSeriesCoefficient( seriesCoefficient )
-            , m_pSeriesNumberOfCollisions( maxCollision )
+        TableInformation(QLineSeries *maxCollision )
+            : m_pSeriesNumberOfCollisions( maxCollision )
         {
             clear();
         };
@@ -66,7 +62,7 @@ private:
 
 private: // Event filter
     virtual bool eventFilter( QObject *target, QEvent *event ) override {
-        if ( target == m_pChartCoefficientView || target == m_pChartCollisionsView ) {
+        if ( target == m_pChartCollisionsView ) {
             QChartView *view = dynamic_cast<QChartView *>( target );
             QChart *chart = view->chart();
 
@@ -110,14 +106,11 @@ private:
     /*
      *  Constants
     */
-    static constexpr char firstChar = ' ';
+    static constexpr char firstChar = '!';
     static constexpr char endChar   = '~';
 
-
-     QChartView *m_pChartCoefficientView;
      QChartView *m_pChartCollisionsView;
-     std::mutex m_columnUpdate;
-     std::mutex m_chartUpdate;
+     std::mutex m_viewUpdate;
      std::atomic<bool> m_stop;
      QStandardItemModel *m_pStandardModel;
 
@@ -192,22 +185,21 @@ private:
     void updateAlgorithmCreator();
     void deleteModel();
     void resetAxes() {
-        m_pChartCoefficientView->chart()->axes(Qt::Horizontal).front()->setRange(1, 2);
-        m_pChartCoefficientView->chart()->axes(Qt::Vertical).front()->setRange(0, 1);
-
         m_pChartCollisionsView->chart()->axes(Qt::Horizontal).front()->setRange(1, 2);
         m_pChartCollisionsView->chart()->axes(Qt::Vertical).front()->setRange(0, 1);
     }
     QString toQString(const value_type &value) {
-        return QString::fromLatin1(value.data(), 5);
+        auto convert = value;
+        unsigned size = std::remove(convert.begin(), convert.end(), '\0') - convert.begin();
+        return QString::fromLatin1(convert.data(), size);
     }
-    value_type toStdArray(std::string &&value) {
-        value.resize(5, firstChar);
-        value_type result;
-        std::copy(value.begin(), value.end(), result.data());
+    value_type toStdArray(std::string &&value) const {
+        value_type result = { '\0', '\0', '\0', '\0', firstChar };
+        std::copy(value.rbegin(), value.rend(), result.rbegin());
         return result;
     }
     value_type &next(value_type &value) const;
+    bool checkBeforeInsertion(bool);
 
     /*
     *   GUI and displaying

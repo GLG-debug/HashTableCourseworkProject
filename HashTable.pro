@@ -1,9 +1,9 @@
 TEMPLATE = app
 
-QMAKE_CXXFLAGS += -O2 -finline-small-functions -momit-leaf-frame-pointer #-mpreferred-stack-boundary=2
+#QMAKE_CXXFLAGS += -O2 -finline-small-functions -momit-leaf-frame-pointer #-mpreferred-stack-boundary=2
 
-#QMAKE_CXXFLAGS_DEBUG += -pg
-#QMAKE_LFLAGS_DEBUG += -pg
+QMAKE_CXXFLAGS_DEBUG += -pg
+QMAKE_LFLAGS_DEBUG += -pg
 
 CONFIG += \
     c++14 \
@@ -79,7 +79,7 @@ SOURCES += \
     SourceCode/UserInterface/ClassesUI/Widgets/Testing/testingWidget.cpp \
     SourceCode/UserInterface/ClassesUI/Widgets/TextBrowser/textBrowserWidget.cpp \
     SourceCode/UserInterface/ClassesUI/Windows/MainWindow/mainWindow.cpp \
-    SourceCode/BusinessLogic/debug.cpp
-    #SourceCode/main.cpp
+    SourceCode/main.cpp
+    #SourceCode/BusinessLogic/debug.cpp
 
 

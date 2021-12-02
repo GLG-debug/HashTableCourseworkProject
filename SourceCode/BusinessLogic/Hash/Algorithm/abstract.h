@@ -78,13 +78,15 @@ public:
 
         numberOfCollisions = 0;
         decltype (m_table->cbegin()) currentIterator;
+
+        constexpr std::array<char, 5> nullValue = {'\0', '\0', '\0', '\0', '\0'};
         while (numberOfCollisions <= size) {
             currentIterator = {
                 m_table->cbegin()
                 + ( beginIndex + (numberOfCollisions % size) * (multiplier % size) ) % size
             };
 
-            if ( currentIterator->front() == 0x0000 || *currentIterator == value ) { // Free cell or value match
+            if ( *currentIterator == nullValue || *currentIterator == value ) { // Free cell or value match
                 return ( currentIterator - m_table->cbegin() );
             }
             ++numberOfCollisions;

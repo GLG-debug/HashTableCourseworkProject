@@ -29,7 +29,8 @@ public:
         , m_numberOfCollision(size, std::numeric_limits<size_t>::max())
         , m_algorithm(factory.getAlgorithm())
     {
-        m_container.resize(size);
+        constexpr std::array<char, 5> nullValue = {'\0', '\0', '\0', '\0', '\0'};
+        m_container.resize(size, nullValue);
         m_algorithm->setTable(&m_container);
     }
 
