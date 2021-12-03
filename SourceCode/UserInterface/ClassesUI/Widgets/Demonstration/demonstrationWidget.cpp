@@ -60,16 +60,15 @@ DemonstrationWidget::DemonstrationWidget(QWidget *pWidget)
 
     m_pChartCollisionsView->installEventFilter(this);
     m_pChartCollisionsView->setRubberBand(QChartView::RectangleRubberBand);
-    m_pChartCollisionsView->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     m_pChartCollisionsView->setRenderHint(QPainter::Antialiasing);
     m_pChartCollisionsView->setMinimumHeight(m_tableView->minimumHeight());
+    m_pChartCollisionsView->setMinimumWidth(m_tableView->minimumWidth());
 
     /*
      *  Splitter
     */
 
     QSplitter *splitter = new QSplitter(Qt::Vertical);
-    splitter->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     splitter->addWidget(m_tableView);
     splitter->addWidget(m_pChartCollisionsView);
 

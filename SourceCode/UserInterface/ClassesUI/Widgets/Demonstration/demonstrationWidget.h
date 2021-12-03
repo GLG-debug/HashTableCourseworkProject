@@ -219,7 +219,6 @@ public slots:
             QList<int> sizes {
                 dynamic_cast<QWidget *>(children[0])->minimumHeight()
                 , dynamic_cast<QWidget *>(children[1])->minimumHeight()
-                , dynamic_cast<QWidget *>(children[2])->minimumHeight()
             };
             splitter->setSizes(sizes);
         }

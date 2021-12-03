@@ -1,9 +1,9 @@
 TEMPLATE = app
 
-#QMAKE_CXXFLAGS += -O2 -finline-small-functions -momit-leaf-frame-pointer #-mpreferred-stack-boundary=2
+QMAKE_CXXFLAGS += -O2 -finline-small-functions -momit-leaf-frame-pointer #-mpreferred-stack-boundary=2
 
-QMAKE_CXXFLAGS_DEBUG += -pg
-QMAKE_LFLAGS_DEBUG += -pg
+#QMAKE_CXXFLAGS_DEBUG += -pg
+#QMAKE_LFLAGS_DEBUG += -pg
 
 CONFIG += \
     c++14 \
