@@ -1,5 +1,4 @@
 #include "dispersion.h"
-#include <QDebug>
 
 BEGIN_NAMESPACE(BusinessLogic)
 BEGIN_NAMESPACE(Statistics)
