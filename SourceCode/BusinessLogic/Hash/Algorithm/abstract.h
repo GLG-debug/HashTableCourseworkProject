@@ -24,6 +24,9 @@ private:
     BusinessLogic::Convert::FromStdString m_toInteger;
 
 protected:
+    size_t m_convertValue;
+
+protected:
     Product() : m_table(nullptr)
     {
     }
@@ -54,27 +57,22 @@ protected:
     virtual bool isValidInput() const {
         return true;
     }
-    virtual size_t  getFirstCoefficient(size_t)  const = 0;
-    virtual size_t  getMultiplier(size_t)        const = 0;
+    virtual size_t  getFirstCoefficient()         const = 0;
+    virtual size_t  getMultiplier(size_t counter) const = 0;
 
 public:
     void setTable(decltype(m_table) table) {
         m_table = table;
     }
 
-    size_t getIndex(const value_type &value, size_t& numberOfCollisions, size_t alphabetPower) const {
+    size_t getIndex(const value_type &value, size_t& numberOfCollisions, size_t alphabetPower) {
         if (not isValidInput()) {
             throw std::invalid_argument("the condition for using the algorithm is not met");
         }
 
         size_t size = m_table->size();
-        size_t convertValue     = m_toInteger(value, alphabetPower);
+        m_convertValue = m_toInteger(value, alphabetPower);
         // It is necessary to use some coefficient
-        size_t beginIndex       = getFirstCoefficient(convertValue) % size;
-        size_t multiplier       = getMultiplier(convertValue);
-        if (multiplier % size == 0) {
-            ++multiplier;
-        }
 
         numberOfCollisions = 0;
         decltype (m_table->cbegin()) currentIterator;
@@ -83,7 +81,9 @@ public:
         while (numberOfCollisions <= size) {
             currentIterator = {
                 m_table->cbegin()
-                + ( beginIndex + (numberOfCollisions % size) * (multiplier % size) ) % size
+                + ( getFirstCoefficient()
+                    * getMultiplier(numberOfCollisions)
+                   ) % size
             };
 
             if ( *currentIterator == nullValue || *currentIterator == value ) { // Free cell or value match

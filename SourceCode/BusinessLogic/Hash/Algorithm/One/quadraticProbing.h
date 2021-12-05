@@ -11,12 +11,8 @@ BEGIN_NAMESPACE(QuadraticProbing)
 class Product final : public One::Product
 {
 private:
-    /* A number that is not mutually prime to the size will not apply */
-    const size_t m_coefficient;
-
-private:
     friend Creator;
-    Product(size_t coefficient) : m_coefficient(coefficient)
+    Product()
     {
     }
 
@@ -24,11 +20,11 @@ protected:
 //    virtual bool isValidInput() const override {
 //        return isPrimeNumber(size());
 //    }
-    virtual size_t getFirstCoefficient(size_t convertValue) const override {
-        return m_hashFunction->getHash(convertValue) % size();
+    virtual size_t getFirstCoefficient() const override {
+        return m_hashFunction->getHash(m_convertValue);
     }
-    virtual size_t getMultiplier(size_t) const override {
-        return m_coefficient;
+    virtual size_t getMultiplier(size_t counter) const override {
+        return std::pow(size(), counter);
     }
 };
 

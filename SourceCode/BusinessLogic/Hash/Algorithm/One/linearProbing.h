@@ -16,7 +16,8 @@ private:
 
 private:
     friend Creator;
-    Product(size_t coefficient) : m_coefficient(coefficient)
+    Product(size_t coefficient)
+        : m_coefficient(coefficient == 0 ? 1 : coefficient)
     {
     }
 
@@ -24,11 +25,11 @@ protected:
 //    virtual bool isValidInput() const override {
 //        return gcd(m_coefficient, size()) == 1;
 //    }
-    virtual size_t getFirstCoefficient(size_t convertValue) const override {
-        return m_hashFunction->getHash(convertValue) % size();
+    virtual size_t getFirstCoefficient() const override {
+        return m_hashFunction->getHash(m_convertValue);
     }
-    virtual size_t getMultiplier(size_t) const override {
-        return m_coefficient;
+    virtual size_t getMultiplier(size_t counter) const override {
+        return counter * m_coefficient;
     }
 };
 

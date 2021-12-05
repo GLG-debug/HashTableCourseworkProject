@@ -24,11 +24,17 @@ private:
     }
 
 protected:
-    virtual size_t getFirstCoefficient(size_t convertValue) const override {
-        return m_hashFunction->getHash(convertValue, m_firstHashFunction);
+    virtual size_t getFirstCoefficient() const override {
+        return m_hashFunction->getHash(m_convertValue, m_firstHashFunction);
     }
-    virtual size_t getMultiplier(size_t convertValue) const override {
-        return m_hashFunction->getHash(convertValue, m_secondHashFunction);
+    virtual size_t getMultiplier(size_t counter) const override {
+        size_t firstCoefficient = getFirstCoefficient();
+        size_t size = this->size();
+        size_t result;
+        do {
+            result = m_hashFunction->getHash(m_convertValue, firstCoefficient++);
+        } while (result % size == 0);
+        return counter * result;
     }
 };
 

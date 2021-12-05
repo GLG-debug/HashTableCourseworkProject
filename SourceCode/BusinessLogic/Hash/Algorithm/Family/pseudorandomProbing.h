@@ -23,17 +23,17 @@ protected:
 //    virtual bool isValidInput() const override {
 //        return isPrimeNumber(size());
 //    }
-    virtual size_t getFirstCoefficient(size_t convertValue) const override {
-        return m_hashFunction->getHash(convertValue, m_hashFunctionNumber);
+    virtual size_t getFirstCoefficient() const override {
+        return m_hashFunction->getHash(m_convertValue, m_hashFunctionNumber);
     }
-    virtual size_t getMultiplier(size_t convertValue) const override {
-        size_t firstCoefficient = getFirstCoefficient(convertValue);
+    virtual size_t getMultiplier(size_t counter) const override {
+        size_t firstCoefficient = getFirstCoefficient();
         size_t size = this->size();
         size_t result;
         do { // Pseudo-random function
-            result = m_hashFunction->getHash(convertValue, firstCoefficient++);
+            result = m_hashFunction->getHash(m_convertValue, firstCoefficient++);
         } while (result % size == 0);
-        return result;
+        return counter * result;
     }
 };
 
