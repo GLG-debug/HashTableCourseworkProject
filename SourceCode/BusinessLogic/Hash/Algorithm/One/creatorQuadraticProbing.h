@@ -11,18 +11,14 @@ BEGIN_NAMESPACE(QuadraticProbing)
 
 class Creator : public One::Creator
 {
-private:
-    /* A number that is not mutually prime to the size will not apply */
-    const size_t m_coefficient;
-
 public:
-    Creator(size_t coefficient = 1) : m_coefficient(coefficient)
+    Creator()
     {
     }
 
 public:
     virtual std::unique_ptr<Abstract::Product> create() const override {
-        return std::unique_ptr<Abstract::Product>(new Product(m_coefficient));
+        return std::unique_ptr<Abstract::Product>(new Product());
     }
 };
 

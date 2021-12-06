@@ -390,19 +390,20 @@ inline void DemonstrationWidget::slotUpdateAdditionalInputData() {
 
     if(getCurrentTableType() == TableType::Chain) {
         m_rbStandart->setEnabled(true);
-        m_frmSecondInputData->setVisible(false);
         m_rbEquivalent->setEnabled(true);
-        m_rbStandart->setEnabled(true);
-    }
-    else if(getCurrentAlgorythmType() == RelationshipType::Family) {
-        m_rbFNV1a32bit->setChecked(true);
-        repaint();
-        m_rbEquivalent->setDisabled(true);
-        m_rbStandart->setDisabled(true);
-        m_frmSecondInputData->setVisible(m_rbDoubleHashing->isChecked());
+        m_frmSecondInputData->setVisible(false);
     }
     else {
-        m_frmSecondInputData->setVisible(false);
+        bool algorythmIsFamily = getCurrentAlgorythmType() == RelationshipType::Family;
+        m_rbEquivalent->setDisabled(algorythmIsFamily);
+        m_rbStandart->setDisabled(algorythmIsFamily);
+        m_frmSecondInputData->setVisible(algorythmIsFamily);
+
+        if(algorythmIsFamily) {
+            m_rbFNV1a32bit->setChecked(true);
+            repaint();
+            m_frmSecondInputData->setVisible(m_rbDoubleHashing->isChecked());
+        }
     }
 }
 

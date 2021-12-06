@@ -57,8 +57,8 @@ protected:
     virtual bool isValidInput() const {
         return true;
     }
-    virtual size_t  getFirstCoefficient()         const = 0;
-    virtual size_t  getMultiplier(size_t counter) const = 0;
+    virtual size_t getFirstCoefficient() = 0;
+    virtual size_t getSecondCoefficient(size_t counter) = 0;
 
 public:
     void setTable(decltype(m_table) table) {
@@ -81,9 +81,7 @@ public:
         while (numberOfCollisions <= size) {
             currentIterator = {
                 m_table->cbegin()
-                + ( getFirstCoefficient()
-                    * getMultiplier(numberOfCollisions)
-                   ) % size
+                + ( getFirstCoefficient() + getSecondCoefficient(numberOfCollisions) ) % size
             };
 
             if ( *currentIterator == nullValue || *currentIterator == value ) { // Free cell or value match

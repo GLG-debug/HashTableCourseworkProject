@@ -3,6 +3,8 @@
 
 #include "family.h"
 
+#include <random>
+
 BEGIN_NAMESPACE(BusinessLogic)
 BEGIN_NAMESPACE(Hash)
 BEGIN_NAMESPACE(Algorithm)
@@ -12,6 +14,7 @@ class Product final : public Family::Product
 {
 private:
     size_t m_hashFunctionNumber;
+    size_t m_multiplier;
 
 private:
     friend Creator;
@@ -23,17 +26,13 @@ protected:
 //    virtual bool isValidInput() const override {
 //        return isPrimeNumber(size());
 //    }
-    virtual size_t getFirstCoefficient() const override {
+    virtual size_t getFirstCoefficient() override {
+        m_multiplier = m_hashFunction->getHash(m_convertValue, m_hashFunctionNumber);
+        srand(m_multiplier);
         return m_hashFunction->getHash(m_convertValue, m_hashFunctionNumber);
     }
-    virtual size_t getMultiplier(size_t counter) const override {
-        size_t firstCoefficient = getFirstCoefficient();
-        size_t size = this->size();
-        size_t result;
-        do { // Pseudo-random function
-            result = m_hashFunction->getHash(m_convertValue, firstCoefficient++);
-        } while (result % size == 0);
-        return counter * result;
+    virtual size_t getSecondCoefficient(size_t counter) override {
+        return counter * rand();
     }
 };
 

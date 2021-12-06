@@ -13,7 +13,7 @@ class Product final : public Family::Product
 private:
     size_t m_firstHashFunction;
     size_t m_secondHashFunction;
-
+    size_t m_multiplier;
 private:
     friend Creator;
     Product(size_t first, size_t second) : m_firstHashFunction(first), m_secondHashFunction(second)
@@ -24,17 +24,12 @@ private:
     }
 
 protected:
-    virtual size_t getFirstCoefficient() const override {
+    virtual size_t getFirstCoefficient() override {
+        m_multiplier = m_hashFunction->getHash(m_convertValue, m_firstHashFunction);
         return m_hashFunction->getHash(m_convertValue, m_firstHashFunction);
     }
-    virtual size_t getMultiplier(size_t counter) const override {
-        size_t firstCoefficient = getFirstCoefficient();
-        size_t size = this->size();
-        size_t result;
-        do {
-            result = m_hashFunction->getHash(m_convertValue, firstCoefficient++);
-        } while (result % size == 0);
-        return counter * result;
+    virtual size_t getSecondCoefficient(size_t counter) override {
+        return counter * m_multiplier;
     }
 };
 

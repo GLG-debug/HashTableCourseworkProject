@@ -20,10 +20,10 @@ protected:
 //    virtual bool isValidInput() const override {
 //        return isPrimeNumber(size());
 //    }
-    virtual size_t getFirstCoefficient() const override {
+    virtual size_t getFirstCoefficient() override {
         return m_hashFunction->getHash(m_convertValue);
     }
-    virtual size_t getMultiplier(size_t counter) const override {
+    virtual size_t getSecondCoefficient(size_t counter) override {
         return std::pow(size(), counter);
     }
 };
