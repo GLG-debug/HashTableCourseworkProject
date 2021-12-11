@@ -7,7 +7,7 @@ QMAKE_CXXFLAGS += -O2 -finline-small-functions -momit-leaf-frame-pointer #-mpref
 
 CONFIG += \
     c++14 \
-    debug
+    release
 
 QT += \
     widgets \
