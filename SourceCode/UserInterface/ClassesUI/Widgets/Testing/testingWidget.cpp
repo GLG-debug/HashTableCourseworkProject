@@ -11,7 +11,7 @@ TestingWidget::TestingWidget(QWidget *pWidget)
     connect( m_pbConfirm, &QPushButton::clicked, this, &TestingWidget::slotClickedConfirm );
 
     connect( m_pbStart, &QPushButton::clicked, this, &TestingWidget::slotClickedStart );
-    connect( m_pbStop, &QPushButton::clicked,  this, &TestingWidget::slotClickedStop );
+    connect( m_pbStop, &QPushButton::clicked,  this, &TestingWidget::slotResetTesting );
 
     connect( m_rbAllDifficulties, &QRadioButton::clicked, this, &TestingWidget::slotSwitchedComplexity );
     connect( m_rbEasy, &QRadioButton::clicked,   this, &TestingWidget::slotSwitchedComplexity );
@@ -23,8 +23,6 @@ TestingWidget::TestingWidget(QWidget *pWidget)
     connect( m_rbHashFunction, &QRadioButton::clicked, this, &TestingWidget::slotSwitchedTopics );
     connect( m_rbHashTable, &QRadioButton::clicked,    this, &TestingWidget::slotSwitchedTopics );
     connect( m_rbAlgorithm, &QRadioButton::clicked,    this, &TestingWidget::slotSwitchedTopics );
-
-    connect(this, &TestingWidget::signalEndOfTesting, this, &TestingWidget::slotResetTesting);
 
     m_frmConfirm->hide();
 }
@@ -108,29 +106,42 @@ inline void TestingWidget::configureInput(const QString &value) {
         m_swInputData->setCurrentIndex(2);
     }
     else {
-        throw std::invalid_argument("input not defined");
+        throw std::invalid_argument("the type of the input option is undefined");
     }
 }
 
 inline bool TestingWidget::showNextQuestion() {
-    m_currentTypeName = m_currentQuestion.attribute("type");
-
     bool continueFlag = true;
+
+    auto checkType = [](const QString &value) -> bool {
+        return bool {
+            value == "choice"
+            || value == "integer"
+            || value == "floatingPoint"
+        };
+    };
+
     while(not m_currentQuestion.isNull() && continueFlag) {
+
+        m_currentTypeName = m_currentQuestion.attribute("type");
         if(   ( m_currentTopicName == "everything"
-                || m_currentTopicName == m_currentQuestion.attribute("category") )
+                || m_currentQuestion.attribute("category").split('|').contains(m_currentTopicName) )
            && ( m_currentComplexityName == "everything"
                || m_currentComplexityName == m_currentQuestion.attribute("complexity") )
+           && checkType(m_currentTypeName)
         ) {
             m_answers.clear();
             m_testingTextBrowser->setHtml(
                 getHTMLQuestion(m_currentQuestion)
             );
+
             configureInput(m_currentTypeName);
+
             continueFlag = false;
         }
         m_currentQuestion = m_currentQuestion.nextSiblingElement("question");
     }
+
     return (not continueFlag);
 }
 
@@ -227,7 +238,7 @@ inline void TestingWidget::slotClickedConfirm(){
 
     if(not showNextQuestion()) {
         setEnabledGUIStartTesting(true);
-        emit signalEndOfTesting();
+        slotResetTesting();
     }
 }
 
@@ -274,8 +285,5 @@ inline void TestingWidget::slotResetTesting() {
     m_testingTextBrowser->clear();
     setEnabledGUIStartTesting(true);
     resetInput();
-}
-
-inline void TestingWidget::slotClickedStop() {
     emit signalEndOfTesting();
 }

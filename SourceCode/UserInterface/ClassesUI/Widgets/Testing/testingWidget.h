@@ -60,7 +60,6 @@ private slots:
     void slotClickedConfirm();
     void slotClickedStart();
     void slotResetTesting();
-    void slotClickedStop();
 
 signals:
     void signalFileOpened(bool /*isOpen*/);

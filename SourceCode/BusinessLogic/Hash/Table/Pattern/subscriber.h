@@ -18,7 +18,6 @@ class InterfaceSubscriber
 public:
     virtual void successfulInsertion(const Table::Abstract *, const std::array<char, 5> &, std::pair<size_t, size_t>, size_t) = 0;
     virtual void unsuccessfulInsertion(const Table::Abstract *, const std::array<char, 5> &) = 0;
-    virtual void filledInPart(const Table::Abstract *) = 0;
 };
 
 class Publisher
@@ -47,11 +46,6 @@ protected:
     virtual void sendUnseccessInsertion(const Table::Abstract *sender, const std::array<char, 5> &value) const {
         for (decltype(auto) currentSubscriber : m_subscribers) {
             currentSubscriber->unsuccessfulInsertion(sender, value);
-        }
-    }
-    virtual void sendFilledInPart(const Table::Abstract *sender) const {
-        for (decltype(auto) currentSubscriber : m_subscribers) {
-            currentSubscriber->filledInPart(sender);
         }
     }
 };

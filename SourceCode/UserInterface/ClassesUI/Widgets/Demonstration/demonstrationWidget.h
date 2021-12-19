@@ -135,7 +135,6 @@ public:
 public: // Custom slots
     virtual void successfulInsertion(const table_type *, const value_type &, std::pair<size_t, size_t>, size_t) override;
     virtual void unsuccessfulInsertion(const table_type *, const value_type &) override;
-    virtual void filledInPart(const table_type *) override {};
 
 private:
     /*

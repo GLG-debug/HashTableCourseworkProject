@@ -37,12 +37,6 @@ inline void TextBrowserWidget::slotPageChanged(const QUrl &url) {
     m_next->setEnabled( isMainPage ? false : m_currentIndexPage not_eq (m_htmlPages.size() - 1) );
 }
 
-inline void TextBrowserWidget::configureTheButtons() {
-    m_main->setEnabled(m_currentIndexPage not_eq 0);
-    m_previous->setEnabled(m_currentIndexPage not_eq 1);
-    m_next->setEnabled(m_currentIndexPage not_eq (m_htmlPages.size() - 1));
-}
-
 inline bool TextBrowserWidget::unpack(const QString &xmlFileName) {
     QDomDocument xmlDocument;
 
@@ -100,21 +94,18 @@ inline bool TextBrowserWidget::unpack(const QString &xmlFileName) {
 }
 
 inline void TextBrowserWidget::slotClickedMain() {
-    configureTheButtons();
     if(m_currentIndexPage not_eq 0) {
         m_textBrowser->setSource(m_htmlPages.front());
     }
 }
 
 inline void TextBrowserWidget::slotClickedPrev() {
-    configureTheButtons();
     if(m_currentIndexPage not_eq 1) {
         m_textBrowser->setSource(m_htmlPages[--m_currentIndexPage]);
     }
 }
 
 inline void TextBrowserWidget::slotClickedNext() {
-    configureTheButtons();
     if(m_currentIndexPage not_eq (m_htmlPages.size() - 1)) {
         m_textBrowser->setSource(m_htmlPages[++m_currentIndexPage]);
     }

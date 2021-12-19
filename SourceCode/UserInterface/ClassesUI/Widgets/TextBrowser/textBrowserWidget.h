@@ -31,11 +31,6 @@ public:
 
 private:
     /*
-    *   GUI and displaying
-    */
-    void configureTheButtons();
-
-    /*
      *  Business logic
     */
     bool setSourceMainPage() {
@@ -48,7 +43,6 @@ private:
 
 private slots:
     void slotPageChanged(const QUrl &url);
-    void slotClickedExit();
     void slotClickedMain();
     void slotClickedPrev();
     void slotClickedNext();
